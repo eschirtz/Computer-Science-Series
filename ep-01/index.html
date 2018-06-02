@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Annealing</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins|Roboto:300" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <div class="controls" style="display: none">
+      <form method="post">
+        <label for="temp">Temperature</label>
+        <input type="number" name="temp">
+        <label for="coolingRate">Cooling Rate</label>
+        <input type="number" name="coolingRate">
+        <input type="radio" name="algorithm" value="Naive Hill Climbing">
+        <input type="radio" name="algorithm" value="Simulated Annealing">
+      </form>
+    </div>
+    <!-- <script src="js/three.js"></script> -->
+    <script type="text/javascript" src="js/vendors/jQuery/jquery-3.2.1.js"></script>
+    <script src="js/Utility.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/handlers.js"></script>
+    <script src="js/State.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

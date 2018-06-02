@@ -15,5 +15,5 @@ const ALGORITHM_DEFAULT = 'simulated_annealing';
 // Annealing
 const TEMP = 100000; // Initial temperature
 const TEMP_CUTOFF = 0.05;
-const COOLING_RATE = 0.99;
+const COOLING_RATE = 0.90;
 const STEP_SIZE_DEFAULT = 25;

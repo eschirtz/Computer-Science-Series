@@ -1,12 +1,28 @@
+function formStart(){
+  let temp = document.getElementById('temp');
+  let coolingRate = document.getElementById('coolingRate');
+  let anneal = document.getElementById('SimulatedAnnealing');
+  let naive = document.getElementById('NaiveHillClimbing');
+  runConfig.initialTemp = temp.value;
+  runConfig.coolingRate = coolingRate.value;
+  if(anneal.checked){
+    runConfig.algorithm = anneal.value;
+  }
+  else{
+    runConfig.algorithm = naive.value; 
+  }
+  // begin simulation
+  naiveDone = false;
+  run();
+}
 /**
  * Event listeners and handlers for user input
  */
-
 window.onkeyup = function(e){
   // Map functions to keys
   switch(e.key){
     case 'Enter':
-      naiveDone = false; 
+      naiveDone = false;
       run();
     break;
   }

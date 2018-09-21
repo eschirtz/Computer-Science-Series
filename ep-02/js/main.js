@@ -1,3 +1,7 @@
+/**
+ * This file is mostly setup for the 3d scene and GUI elements,
+ * the logic for easing is all done inside of the "Cube.js" file.
+ */
 const body = document.getElementsByTagName("body")[0];
 const info = document.getElementById("info");
 body.style.margin = "0px";
@@ -35,6 +39,7 @@ var material = new THREE.MeshPhongMaterial({
   color: config.colors.primary
 });
 var cube1 = new THREE.Mesh(geometry, material);
+// *** Constructor for CUBE object called here! Last parameter is the Easing factor!
 cube1.state = new ObjectState(0, 1, 0, true, 50);
 cube1.position.set(cube1.state.pos.x, cube1.state.pos.y, cube1.state.pos.z);
 scene.add(cube1);
@@ -45,6 +50,7 @@ material = new THREE.MeshPhongMaterial({
   color: config.colors.secondary
 });
 var cube2 = new THREE.Mesh(geometry, material);
+// *** Constructor for CUBE object called here! Last parameter is the Easing factor!
 cube2.state = new ObjectState(0, -1, 0, false, 0);
 cube2.position.set(cube2.state.pos.x, cube2.state.pos.y, cube2.state.pos.z);
 scene.add(cube2);
@@ -55,7 +61,6 @@ scene.add(ambient);
 light.position.set(0, 50, 50);
 scene.add(light);
 camera.position.z = 5;
-console.log(scene);
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
@@ -74,7 +79,6 @@ function animate() {
     object.rotation.z += 0.05;
   })
   // update html
-  console.log(cube1.state.easing);
   info.innerHTML = '<span class="label">Ease: </span><span class="values">' + cube1.state.easingFactor +
     '</span><span class="label">, Speed: <span class="values">(' +
     (cube1.state.pos.speed.x * 100).toFixed(2) + ', ' + (cube1.state.pos.speed.y * 100).toFixed(2) +

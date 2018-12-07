@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang='en-US'>
+<head>
+  <meta charset='utf-8'>
+  <title>Canvas DPI Scaler</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+      margin: 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h3>Scaled</h3>
+  <canvas id="scaled" width="300" height="180"></canvas>
+
+  <h3>Unscaled</h3>
+  <canvas id="unscaled" width="300" height="180"></canvas>
+
+  <script src='./canvas-dpi-scaler.js'></script>
+  <script>
+    var canvases = [ document.getElementById('unscaled'),
+                     document.getElementById('scaled') ];
+
+    var context, ndx;
+    canvases.forEach(function(canvas, shouldScale) {
+      context = canvas.getContext('2d');
+      if(shouldScale) { canvasDpiScaler(canvas, context); }
+
+      // Render some things...
+      for(ndx = 0; ndx < 5; ndx++) {
+        context.beginPath();
+        context.arc(30 + (ndx * 50), 40, 20, 0, 2 * Math.PI, false);
+        context.rect(10 + (ndx * 50), 80, 40, 40);
+        context.fillStyle = ['red', 'green', 'blue', 'purple', 'pink'][ndx];
+        context.fill();
+      }
+
+      // Text
+      context.font = 'normal 20pt Arial';
+      context.fillStyle = 'black';
+      context.fillText('How crisp is this?', 10, 160);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+button{
+  transition: background-color .25s, border-color .25s;
+}
+.button.button-secondary,
+button.button-secondary,
+input[type="submit"].button-secondary,
+input[type="reset"].button-secondary,
+input[type="button"].button-secondary  {
+  color: #FFF;
+  background-color: #BBBBBB;
+  border-color: #BBBBBB;
+}
+
+.button.button-secondary:hover,
+button.button-secondary:hover,
+input[type="submit"].button-secondary:hover,
+input[type="reset"].button-secondary:hover,
+input[type="button"].button-secondary:hover,
+.button.button-secondary:focus,
+button.button-secondary:focus,
+input[type="submit"].button-secondary:focus,
+input[type="reset"].button-secondary:focus,
+input[type="button"].button-secondary:focus {
+  color: #FFF;
+  background-color: #AAAAAA;
+  border-color: #AAAAAA;
+}

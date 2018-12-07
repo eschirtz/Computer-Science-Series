@@ -1,5 +1,0 @@
-This file can be used to find the relevant files for this episode's topic
-
-"Search.js" the algorithm lives here
-"Config.js" the Temperature and Cooling Rate can be altered in this file
-"State.js" is a data structure to hold the ball's current state, as well as computing successors

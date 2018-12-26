@@ -14,7 +14,7 @@ class State {
 class StateSpace_2D {
   constructor() {
     this.scores = [];
-    this.maxScore = 0;// Number.MIN_VALUE;
+    this.maxScore = 0;
   }
   set max(score) {
     if (score > this.maxScore) {
@@ -28,8 +28,8 @@ class StateSpace_2D {
    * @param  stepSize  [number of steps from current]
    * @return states [all successors of state]
    */
-  getSuccessors(state, ss) {
-    const stepSize = ss || 1;
+  getSuccessors(state, stateSpace) {
+    const stepSize = stateSpace || 1;
     const states = [];
     let x = state.coords[0] - stepSize; // get start index
     x = x < 0 ? 0 : x;
@@ -52,3 +52,5 @@ class StateSpace_2D {
     return state;
   }
 }
+
+export default { StateSpace_2D, State };

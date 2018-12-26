@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Performs naive hill climbing, only
  * taking a successor if it has a greater score

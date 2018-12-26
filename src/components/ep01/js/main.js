@@ -1,6 +1,17 @@
-import canvasDpiScaler from 'canvas-dpi-scaler';
+/**
+ * WARNING! This code is a hack, the only interesting code lives
+ * inside "algorithms.js", found in this directory
+ */
 
-const stateSpace = {};
+import canvasTools from '@/custom-modules/canvas-tools';
+import { drawHill, drawBall } from './DrawingTools';
+import StateSpace from './StateSpace';
+import Algorithm from './algorithms';
+
+const scene = {
+  stateSpace: {},
+  currState: {},
+};
 
 /**
  * Creates a normalized "hill" or function with
@@ -29,7 +40,7 @@ function getHill(points, options) {
     const cos2 = (0.25) * Math.cos(2 * pi * (f2) * t + 2 * pi * phi2);
     const cos3 = (0.1) * Math.cos(2 * pi * (f3) * t + 2 * pi * phi3);
     const cos4 = (1.65) * Math.cos(2 * pi * (f4) * t + 2 * pi * phi4);
-    /* eslint-disable no-mixed-operators */
+    /* eslint-enable no-mixed-operators */
     const cosSum = cos1 + cos2 + cos3 + cos4 + 2;
     const currHeight = Math.abs(cosSum); // prevent negative valleys
     if (currHeight > maxHeight) maxHeight = currHeight;
@@ -42,61 +53,112 @@ function getHill(points, options) {
   return hill;
 }
 
-function drawHill(canvas, ssHill, options) {
-  // Setup
-  const context = canvas.getContext('2d');
-  const spacing = (options.width / (ssHill.scores.length - 1));
-  const x = options.x - options.width / 2;
-  const y = options.y;
-  // Draw
-  context.beginPath();
-  context.moveTo(x, y);
-  for (let i = 0; i < ssHill.scores.length; i += 1) {
-    context.lineTo(x + i * spacing, y + ssHill.scores[i] * options.height);
-  }
-  context.lineTo(x + (ssHill.scores.length - 1) * spacing, y);
-  context.lineTo(x, y);
-  context.fillStyle = options.color || 'black';
-  context.fill();
-}
 
 function render(canvas, options) {
-  /* eslint-disable no-param-reassign */
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  /* eslint-enable no-param-reassign */
   // Clear Canvas
   const context = canvas.getContext('2d');
   context.fillStyle = options.backgroundColor || 'white';
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.translate(canvas.width / 2, canvas.height / 2); // set (0,0) to center
   context.scale(1, -1); // set positive Y as up
+  context.translate(canvas.width / 2, -canvas.height / 2); // set (0,0) to center
+  const x = 0;
+  const y = -canvas.height / 2;
+  const width = canvas.width;
+  const height = canvas.height * (3 / 4);
   // Draw Scene
-  drawHill(canvas, stateSpace, {
-    x: 0,
-    y: -canvas.height / 2,
-    width: canvas.width,
-    height: canvas.height / 2,
-    color: options.hillColor || 'black',
+  drawHill(canvas, scene.backgroundHill, {
+    x,
+    y,
+    width,
+    height,
+    color: options.backgroundHillColor,
+  });
+  drawHill(canvas, scene.stateSpace.scores, {
+    x,
+    y,
+    width,
+    height,
+    color: options.hillColor,
+  });
+  const radius = 25;
+  drawBall(canvas, scene.currState, scene.stateSpace, {
+    x,
+    y: y + radius,
+    width,
+    height,
+    radius,
+    primaryColor: options.ballColor,
+    secondaryColor: options.ballColor,
   });
 }
 
+// Wrapper for canvas-tools
 function setCanvasSize(canvas) {
-  /* eslint-disable no-param-reassign */
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  /* eslint-enable no-param-reassign */
-  canvasDpiScaler(canvas, canvas.getContext('2d'));
+  canvasTools.setCanvasSize(canvas);
 }
 
 function initialize(canvas, options) {
   // Build scene
   const numPoints = options.numPoints || 300;
-  stateSpace.scores = getHill(
+  // Artwork
+  scene.backgroundHill = getHill(
+    numPoints,
+    { f3: 2 });
+  // Algorithm dependants
+  scene.stateSpace = new StateSpace();
+  scene.stateSpace.scores = getHill(
     numPoints,
     options);
+  scene.currState = scene.stateSpace.randomState();
+  scene.canvas = canvas; // add global pointer to the canvas
+  scene.backgroundColor = options.backgroundColor;
+  scene.backgroundHillColor = options.backgroundHillColor;
+  scene.hillColor = options.hillColor;
+  scene.ballColor = options.ballColor;
   setCanvasSize(canvas);
-  render(canvas, options);
+  render(scene.canvas, {
+    backgroundHillColor: scene.backgroundHillColor,
+    hillColor: scene.hillColor,
+    backgroundColor: scene.backgroundColor,
+    ballColor: scene.ballColor,
+  });
+}
+/**
+ * Pulls from global scene to do work
+ * Dependency on globals is a little sloppy,
+ * but fine for this demo
+ * @return {[type]} [description]
+ */
+function frame() {
+  // Update Scene only at intervals set by keyframe
+  window.requestAnimationFrame(frame);
+  if (scene.time % scene.keyframe === 0) {
+    scene.currState = Algorithm.simulatedAnnealing(
+      scene.currState,
+      scene.stateSpace,
+      scene.temp,
+      scene.stepSize);
+    scene.temp *= scene.coolingRate; // apply cooling
+    setCanvasSize(scene.canvas);
+    render(scene.canvas, {
+      backgroundHillColor: scene.backgroundHillColor,
+      hillColor: scene.hillColor,
+      backgroundColor: scene.backgroundColor,
+      ballColor: scene.ballColor,
+    });
+  }
+  scene.time += 1;
 }
 
-export default { initialize, setCanvasSize, render };
+function run(opts) {
+  const options = opts || {};
+  scene.temp = options.initialTemp;
+  scene.coolingRate = options.coolingRate;
+  scene.algorithm = options.algorithm;
+  scene.keyframe = options.keyframe; // frames between changes
+  scene.stepSize = options.stepSize;
+  scene.time = 0;
+  frame();
+}
+
+export default { initialize, setCanvasSize, render, run };

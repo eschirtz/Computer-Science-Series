@@ -1,5 +1,16 @@
 <template lang="html">
   <div class="container">
+    <form class="controller">
+      <label for="initialTemp">Initial Temp.</label>
+      <input type="text" name="initialTemp" v-model="initialTemp" placeholder="Initial Temp">
+      <label for="coolingRate">Cooling Rate</label>
+      <input type="text" name="coolingRate" v-model="coolingRate" placeholder="Cooling Rate">
+      <label for="speed">Simulation Speed</label>
+      <input type="range" v-model.number="speed" min="0" max="100">
+      <br>
+      <button type="button" @click="run">Run</button>
+      <button type="button" @click="initialize">Reset</button>
+    </form>
     <canvas ref="canvas"></canvas>
   </div>
 </template>
@@ -14,7 +25,23 @@ export default {
       hillColor: '#391A07',
       backgroundColor: '#D66E2D',
       ballColor: '#E8F980',
+      initialTemp: 10,
+      coolingRate: 0.99,
+      speed: 50,
     };
+  },
+  computed: {
+    keyFrame() {
+      const RANGE = 100;
+      const MAX_KEYFRAME = 100;
+      const MIN_KEYFRAME = 1;
+      /* eslint-disable no-mixed-operators */
+      let keyFrame = ((MAX_KEYFRAME - MIN_KEYFRAME) *
+      (RANGE - parseInt(this.speed, 10)) / RANGE) + 1;
+      /* eslint-enable no-mixed-operators */
+      keyFrame = Math.round(keyFrame);
+      return keyFrame;
+    },
   },
   methods: {
     setCanvasSize() {
@@ -36,10 +63,10 @@ export default {
     },
     run() {
       app.run({
-        initialTemp: 100000,
-        coolingRate: 0.99,
+        initialTemp: this.initialTemp,
+        coolingRate: this.coolingRate,
         algorithm: 'annealing',
-        keyframe: 1,
+        keyframe: this.keyFrame,
         stepSize: 50,
       });
     },
@@ -74,5 +101,15 @@ export default {
     display: block;
     margin: 0;
     padding: 0;
+    z-index: -1;
+  }
+
+  .controller {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    padding: 10px;
+    background-color: rgba(100, 100, 100, 0.5);
   }
 </style>

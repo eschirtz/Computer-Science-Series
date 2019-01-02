@@ -5,11 +5,12 @@
       <input type="text" name="initialTemp" v-model="initialTemp" placeholder="Initial Temp">
       <label for="coolingRate">Cooling Rate</label>
       <input type="text" name="coolingRate" v-model="coolingRate" placeholder="Cooling Rate">
+      <hr>
       <label for="speed">Simulation Speed</label>
       <input type="range" v-model.number="speed" min="0" max="100">
       <br>
       <button type="button" @click="run">Run</button>
-      <button type="button" @click="initialize">Reset</button>
+      <button type="button" @click="restart">Restart</button>
     </form>
     <canvas ref="canvas"></canvas>
   </div>
@@ -70,6 +71,10 @@ export default {
         stepSize: 50,
       });
     },
+    restart() {
+      app.terminate();
+      this.initialize();
+    },
     handleKeydown(e) {
       const key = e.key;
       switch (key) {
@@ -104,12 +109,18 @@ export default {
     z-index: -1;
   }
 
+  hr{
+    border-color: #bbb;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
   .controller {
     position: fixed;
     top: 10px;
     left: 10px;
     z-index: 1;
     padding: 10px;
-    background-color: rgba(100, 100, 100, 0.5);
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: .5rem;
   }
 </style>

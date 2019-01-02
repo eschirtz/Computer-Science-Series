@@ -8,6 +8,8 @@ import { drawHill, drawBall } from './DrawingTools';
 import StateSpace from './StateSpace';
 import Algorithm from './algorithms';
 
+let currentFrame = null;
+
 const scene = {
   stateSpace: {},
   currState: {},
@@ -131,7 +133,7 @@ function initialize(canvas, options) {
  */
 function frame() {
   // Update Scene only at intervals set by keyframe
-  window.requestAnimationFrame(frame);
+  currentFrame = window.requestAnimationFrame(frame);
   if (scene.time % scene.keyframe === 0) {
     scene.currState = Algorithm.simulatedAnnealing(
       scene.currState,
@@ -151,6 +153,9 @@ function frame() {
 }
 
 function run(opts) {
+  if (currentFrame) {
+    window.cancelAnimationFrame(currentFrame);
+  }
   const options = opts || {};
   scene.temp = options.initialTemp;
   scene.coolingRate = options.coolingRate;
@@ -161,4 +166,10 @@ function run(opts) {
   frame();
 }
 
-export default { initialize, setCanvasSize, render, run };
+function terminate() {
+  if (currentFrame) {
+    window.cancelAnimationFrame(currentFrame);
+  }
+}
+
+export default { initialize, setCanvasSize, render, run, terminate };

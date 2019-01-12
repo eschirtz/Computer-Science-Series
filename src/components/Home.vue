@@ -1,22 +1,19 @@
 <template lang="html">
   <div class="container">
-    <div class="row">
+    <section class="header">
       <h1 class="title">CS <i>Visualized</i></h1>
       <p><i>By Eric Schirtzinger</i></p>
-    </div>
-    <div class="row">
       <a target="_blank" href="https://www.youtube.com/playlist?list=PLT40GkRdNrGz3ls-78iJkdoV7Vjh6xG05">
         <button class="button-primary">Videos</button>
       </a>
       <a target="_blank" href="https://github.com/eschirtz">
         <button class="button-secondary">GitHub</button>
       </a>
-    </div>
+    </section>
     <div class="row">
       <hr>
     </div>
     <div class="list-item" v-for="episode in episodes" :key="episode.num" >
-
       <div class="row">
         <div class="two columns">
           {{episode.num}}
@@ -29,7 +26,6 @@
         </div>
       </div>
       <hr>
-
     </div>
   </div>
 </template>

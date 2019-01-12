@@ -1,7 +1,8 @@
 <template lang="html">
   <div class="container">
     <div class="row">
-      <h1 class="title">Computer Science <i>Visualized</i></h1>
+      <h1 class="title">CS <i>Visualized</i></h1>
+      <p><i>By Eric Schirtzinger</i></p>
     </div>
     <div class="row">
       <a target="_blank" href="https://www.youtube.com/playlist?list=PLT40GkRdNrGz3ls-78iJkdoV7Vjh6xG05">
@@ -49,6 +50,12 @@ export default {
           video: 'youtube.com',
           link: '/ep01',
           description: 'In order to make objects in games behave more naturally, game designers often give them "inertia". This simple trick makes this very easy.',
+        },
+        { num: 'ep. 3 )',
+          name: 'K-means Clustering',
+          video: 'youtube.com',
+          link: '/ep03',
+          description: 'An unsupervised learning algorithm',
         },
       ],
     };

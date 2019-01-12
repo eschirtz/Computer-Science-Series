@@ -9,6 +9,8 @@ import Util from './utility';
 const TWEEN = require('./Tween.js').TWEEN;
 
 const World = {};
+const BG_COLOR = '#292E34';
+const DEFAULT_COLOR = '#363D45';
 
 function animate() {
   window.requestAnimationFrame(animate);
@@ -46,11 +48,11 @@ function initialize(numPoints, clusters, canvas) {
 
 function render(canvas) {
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = 'rgb(10,10,10)';
+  ctx.fillStyle = BG_COLOR;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   World.points.forEach((point) => {
-    let color = 'rgb(50,50,50)';
-    if (point.hue !== undefined) { color = `hsl(${point.hue}, 80%, 50%)`; }
+    let color = DEFAULT_COLOR;
+    if (point.hue !== undefined) { color = `hsl(${point.hue}, 70%, 60%)`; }
     drawPoint(ctx, point.x, point.y, 5, color);
   });
   World.centroids.forEach((centroid) => {

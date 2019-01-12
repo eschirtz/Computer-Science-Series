@@ -1,14 +1,14 @@
 <template lang="html">
   <div class="container">
     <section class="header">
-      <h1 class="title">CS <i>Visualized</i></h1>
-      <p><i>By Eric Schirtzinger</i></p>
-      <a target="_blank" href="https://www.youtube.com/playlist?list=PLT40GkRdNrGz3ls-78iJkdoV7Vjh6xG05">
+      <lottie :options="animationOptions" style="margin-top: 2em" :height="250" />
+      <!-- <a target="_blank" href="https://www.youtube.com/playlist?list=PLT40GkRdNrGz3ls-78iJkdoV7Vjh6xG05">
         <button class="button-primary">Videos</button>
       </a>
       <a target="_blank" href="https://github.com/eschirtz">
         <button class="button-secondary">GitHub</button>
-      </a>
+      </a> -->
+
     </section>
     <div class="row">
       <hr>
@@ -31,6 +31,9 @@
 </template>
 
 <script>
+import Lottie from 'vue-lottie';
+import loaderAnimation from '@/assets/animations/title.json';
+
 export default {
   data() {
     return {
@@ -54,7 +57,11 @@ export default {
           description: 'An unsupervised learning algorithm',
         },
       ],
+      animationOptions: { animationData: loaderAnimation },
     };
+  },
+  components: {
+    lottie: Lottie,
   },
 };
 </script>
@@ -62,13 +69,18 @@ export default {
 <style lang="css" scoped>
   a{
     text-decoration: none;
-    color: #222;
+    color: #A7ACB6;
     transition: color 0.2s;
   }
   a:hover{
     color: #0FA0CE;
   }
+  p{
+    color: #A7ACB6;
+  }
+  p:hover{
+  }
   .container{
-    margin-top: 160px;
+
   }
 </style>

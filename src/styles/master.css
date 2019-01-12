@@ -25,3 +25,12 @@ input[type="button"].button-secondary:focus {
   background-color: #AAAAAA;
   border-color: #AAAAAA;
 }
+
+body{
+  color: #A7ACB6;
+  background: #292E34;
+}
+
+hr{
+  border-color: #5C626B;
+}

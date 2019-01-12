@@ -11,8 +11,8 @@ import app from './js/main';
 export default {
   data() {
     return {
-      points: 400,
-      clusters: 4,
+      points: 800,
+      clusters: 8,
     };
   },
   methods: {

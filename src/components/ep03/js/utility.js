@@ -27,11 +27,8 @@ function getGroupedDistribution(width, height, numPoints, numGroups) {
       y: (Math.random() * (height - (2 * PADDING))) + PADDING,
     });
   }
-  console.log('Groups');
-  console.log(groups);
   for (let i = 0; i < numPoints; i += 1) {
     const currGroup = Math.floor(Math.random() * numGroups);
-    console.log(currGroup);
     points.push(
       {
         x: groups[currGroup].x + ((PADDING * Math.random()) - 1),
@@ -39,8 +36,6 @@ function getGroupedDistribution(width, height, numPoints, numGroups) {
       },
     );
   }
-  console.log('Points');
-  console.log(points);
   return points;
 }
 export default { getDistance, getAveragePos, getGroupedDistribution };

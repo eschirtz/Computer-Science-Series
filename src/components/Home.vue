@@ -1,25 +1,18 @@
 <template lang="html">
   <div class="container">
     <section class="header">
-      <lottie :options="animationOptions" style="margin-top: 2em" :height="250" />
-      <!-- <a target="_blank" href="https://www.youtube.com/playlist?list=PLT40GkRdNrGz3ls-78iJkdoV7Vjh6xG05">
-        <button class="button-primary">Videos</button>
-      </a>
-      <a target="_blank" href="https://github.com/eschirtz">
-        <button class="button-secondary">GitHub</button>
-      </a> -->
-
+      <lottie :options="animationOptions" style="margin-top: 4em" :height="250" />
     </section>
     <div class="row">
       <hr>
     </div>
     <div class="list-item" v-for="episode in episodes" :key="episode.num" >
       <div class="row">
-        <div class="two columns">
+        <div class="two columns" style="color: #5C626B;">
           {{episode.num}}
         </div>
         <div class="ten columns">
-          <router-link :to="episode.link">
+          <router-link :to="episode.demolink">
             <h5 style="margin-bottom: 0;">{{episode.name}}</h5>
             <p>{{episode.description}}</p>
           </router-link>
@@ -27,6 +20,14 @@
       </div>
       <hr>
     </div>
+    <footer style="margin-bottom: 2em; text-align: center">
+      <small>
+        &copy; 2018
+        Eric Schirtzinger
+        <br>
+        <a href="https://www.eschirtz.com">www.eschirtz.com</a>
+      </small>
+    </footer>
   </div>
 </template>
 
@@ -41,19 +42,22 @@ export default {
         { num: 'ep. 1 )',
           name: 'Simulated Annealing',
           video: 'https://www.youtube.com/watch?v=S9vs05eAGN0',
-          link: '/ep01',
+          demolink: '/demos/ep01',
+          writeuplink: '/writeups/ep01',
           description: 'We examine an optimization algorithm known as Simulated Annealing. This algorithm draws inspiration from the physical process of annealing. Annealing is when a metal is heated and then cooled slowly in order to reach it\'s most stable state.',
         },
         { num: 'ep. 2 )',
           name: 'Easing Function Hack',
           video: 'youtube.com',
-          link: '/ep01',
+          demolink: '/ep01',
+          writeuplink: '/ep01',
           description: 'In order to make objects in games behave more naturally, game designers often give them "inertia". This simple trick makes this very easy.',
         },
         { num: 'ep. 3 )',
           name: 'K-means Clustering',
           video: 'youtube.com',
-          link: '/ep03',
+          demolink: '/demos/ep03',
+          writeuplink: '/writeups/ep03',
           description: 'An unsupervised learning algorithm',
         },
       ],
@@ -75,12 +79,7 @@ export default {
   a:hover{
     color: #0FA0CE;
   }
-  p{
-    color: #A7ACB6;
-  }
-  p:hover{
-  }
-  .container{
-
-  }
 </style>
+
+<!-- <a target="_blank" href="https://github.com/eschirtz">GitHub</a> -->
+<!-- <a target="_blank" href="https://www.youtube.com/playlist?list=PLT40GkRdNrGz3ls-78iJkdoV7Vjh6xG05">Videos</a> -->

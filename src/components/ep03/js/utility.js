@@ -23,8 +23,8 @@ function getGroupedDistribution(width, height, numPoints, numGroups) {
   const PADDING = 500; // pixel padding amount
   for (let i = 0; i < numGroups; i += 1) {
     groups.push({
-      x: (Math.random() * (width - (2 * PADDING))) + PADDING,
-      y: (Math.random() * (height - (2 * PADDING))) + PADDING,
+      x: (Math.random() * (width - (2 * PADDING))) + (PADDING / 2),
+      y: (Math.random() * (height - (2 * PADDING))) + (PADDING / 2),
     });
   }
   for (let i = 0; i < numPoints; i += 1) {

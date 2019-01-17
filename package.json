@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "canvas-dpi-scaler": "0.0.3",
+    "showdown": "^1.9.0",
     "vue": "^2.5.2",
     "vue-lottie": "^0.2.1",
     "vue-router": "^3.0.1"
@@ -48,6 +49,7 @@
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.8",
     "postcss-url": "^7.2.1",
+    "raw-loader": "^1.0.0",
     "rimraf": "^2.6.0",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",

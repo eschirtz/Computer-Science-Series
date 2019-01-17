@@ -18,10 +18,12 @@ function animate() {
   render(World.canvas);
 }
 
-function initialize(numPoints, clusters, canvas) {
+function initialize(numPoints, clusters, canvas, numSteps) {
+  console.log(numSteps);
   const width = canvas.width;
   const height = canvas.height;
   World.numClusters = clusters;
+  World.numSteps = numSteps;
   World.centroids = [];
   World.canvas = canvas;
   // Place clusters randomly
@@ -41,7 +43,7 @@ function initialize(numPoints, clusters, canvas) {
     canvas.width,
     canvas.height,
     numPoints,
-    8,
+    clusters * (Math.random() * 2),
   );
   animate(); // kick off animation loop for tweening
 }
@@ -85,13 +87,18 @@ function step() {
   // Update centroid locations
   World.centroids.forEach((centroid) => {
     const newPos = Util.getAveragePos(centroid.bucket);
-    // centroid.x = newPos.x;
-    // centroid.y = newPos.y;
-    // Animate that stuff
+    // Setup tweening animation
     const tween = new TWEEN.Tween(centroid);
     tween.to({ x: newPos.x, y: newPos.y }, 1000)
       .easing(TWEEN.Easing.Quadratic.Out)
-      .start();
+      .start()
+      .onComplete(() => {
+        // if (World.numSteps > 0) {
+        //   step();
+        //   World.numSteps -= 1;
+        // }
+        // console.log(`Completed step #${World.numSteps}`);
+      });
   });
 }
 

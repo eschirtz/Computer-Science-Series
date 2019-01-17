@@ -1,5 +1,6 @@
 <template lang="html">
   <div class="container">
+    <home-button></home-button>
     <form class="controller">
       <label for="initialTemp">Initial Temp.</label>
       <input type="text" name="initialTemp" v-model="initialTemp" placeholder="Initial Temp">
@@ -94,6 +95,7 @@ export default {
     window.onkeydown = this.handleKeydown;
   },
   beforeDestroy() {
+    window.removeEventListener('resize', this.setCanvasSize);
   },
 };
 </script>
@@ -116,7 +118,7 @@ export default {
   }
   .controller {
     position: fixed;
-    top: 10px;
+    bottom: 10px;
     left: 10px;
     z-index: 1;
     padding: 10px;

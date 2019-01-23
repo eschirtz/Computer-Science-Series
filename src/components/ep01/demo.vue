@@ -8,27 +8,12 @@
       <div class="container">
         <canvas ref="canvas" class="full-screen-canvas"></canvas>
         <div class="controller">
-          <circle-button v-on:click.native="run">skip_next</circle-button>
+          <circle-button v-on:click.native="run">play_arrow</circle-button>
           <circle-button v-on:click.native="restart">replay</circle-button>
           <circle-button v-on:click.native="initialize">settings</circle-button>
         </div>
-        <!-- <form class="controller">
-          <label for="initialTemp">Initial Temp.</label>
-          <input type="text" name="initialTemp" v-model="initialTemp" placeholder="Initial Temp">
-          <label for="coolingRate">Cooling Rate</label>
-          <input type="text" name="coolingRate" v-model="coolingRate" placeholder="Cooling Rate">
-          <hr>
-          <label for="speed">Simulation Speed</label>
-          <input type="range" v-model.number="speed" min="0" max="100">
-          <br>
-          <button type="button" @click="run">Run</button>
-          <button type="button" class="button-primary" @click="restart">Restart</button>
-        </form> -->
-
       </div>
-
   </div>
-
 </template>
 
 <script>
@@ -90,23 +75,10 @@ export default {
       app.terminate();
       this.initialize();
     },
-    handleKeydown(e) {
-      const key = e.key;
-      switch (key) {
-        case 'Escape':
-          this.$router.push('/');
-          break;
-        case 'Enter':
-          this.run();
-          break;
-        default:
-      }
-    },
   },
   mounted() {
     this.initialize();
     window.addEventListener('resize', this.setCanvasSize);
-    window.onkeydown = this.handleKeydown;
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.setCanvasSize);

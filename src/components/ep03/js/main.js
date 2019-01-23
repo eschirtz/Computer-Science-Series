@@ -1,9 +1,10 @@
+/**
+ * K-means clustering algorithm
+ */
+
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
-/**
- * K-means clustering
- */
 import Util from './utility';
 
 const TWEEN = require('./Tween.js').TWEEN;
@@ -19,12 +20,13 @@ function animate() {
   render(World.canvas);
 }
 
-function initialize(numPoints, numCentroids, canvas, numSteps) {
+function initialize(numPoints, numCentroids, canvas, maxSteps) {
+  TWEEN.removeAll();
   const width = canvas.width;
   const height = canvas.height;
   World.numCentroids = numCentroids;
   World.numPoints = numPoints;
-  World.numSteps = numSteps;
+  World.numSteps = maxSteps;
   World.centroids = [];
   World.canvas = canvas;
   setCentroids(width, height);
@@ -73,7 +75,17 @@ function render(canvas) {
   });
 }
 
-function step() {
+let numberCompleted = 0;
+function autoComplete() {
+  numberCompleted += 1;
+  if (numberCompleted >= World.numCentroids && World.numSteps > 0) {
+    step(true);
+    numberCompleted = 0;
+    World.numSteps -= 1;
+  }
+}
+
+function step(runThrough) {
   // Make buckets
   for (let i = 0; i < World.numCentroids; i += 1) {
     World.centroids[i].prevBucket = World.centroids[i].bucket; // save prev
@@ -104,11 +116,9 @@ function step() {
       .easing(TWEEN.Easing.Quadratic.Out)
       .start()
       .onComplete(() => {
-        // if (World.numSteps > 0) {
-        //   step();
-        //   World.numSteps -= 1;
-        // }
-        // console.log(`Completed step #${World.numSteps}`);
+        if (runThrough) {
+          autoComplete();
+        }
       });
   });
 }

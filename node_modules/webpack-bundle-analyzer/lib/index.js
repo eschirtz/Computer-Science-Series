@@ -1,7 +1,8 @@
-'use strict';
+"use strict";
 
-var _require = require('./viewer'),
-    start = _require.start;
+const {
+  start
+} = require('./viewer');
 
 module.exports = {
   start,

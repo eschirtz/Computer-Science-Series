@@ -6,7 +6,6 @@
 ## Why
 
 - [Gracefully handles filesystem issues](https://github.com/isaacs/node-graceful-fs)
-- [Strips UTF-8 BOM](https://github.com/sindresorhus/strip-bom)
 - [Throws more helpful JSON errors](https://github.com/sindresorhus/parse-json)
 - [Normalizes the data](https://github.com/npm/normalize-package-data#what-normalization-currently-entails)
 
@@ -14,7 +13,7 @@
 ## Install
 
 ```
-$ npm install --save read-pkg
+$ npm install read-pkg
 ```
 
 
@@ -23,41 +22,36 @@ $ npm install --save read-pkg
 ```js
 const readPkg = require('read-pkg');
 
-readPkg().then(pkg => {
-	console.log(pkg);
+(async () => {
+	console.log(await readPkg());
 	//=> {name: 'read-pkg', ...}
-});
 
-readPkg(__dirname).then(pkg => {
-	console.log(pkg);
-	//=> {name: 'read-pkg', ...}
-});
-
-readPkg(path.join('unicorn', 'package.json')).then(pkg => {
-	console.log(pkg);
-	//=> {name: 'read-pkg', ...}
-});
+	console.log(await readPkg({cwd: 'some-other-directory'});
+	//=> {name: 'unicorn', ...}
+})();
 ```
 
 
 ## API
 
-### readPkg([path], [options])
+### readPkg([options])
 
 Returns a `Promise` for the parsed JSON.
 
-### readPkg.sync([path], [options])
+### readPkg.sync([options])
 
 Returns the parsed JSON.
 
-#### path
+#### options
+
+Type: `Object`
+
+##### cwd
 
 Type: `string`<br>
-Default: `.`
+Default: `process.cwd()`
 
-Path to a `package.json` file or its directory.
-
-#### options
+Current working directory.
 
 ##### normalize
 

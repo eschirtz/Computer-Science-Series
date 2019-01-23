@@ -1,6 +1,8 @@
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _postcss = require('postcss');
 
@@ -9,6 +11,10 @@ var _postcss2 = _interopRequireDefault(_postcss);
 var _getParsed = require('./lib/getParsed');
 
 var _getParsed2 = _interopRequireDefault(_getParsed);
+
+var _animation = require('./rules/animation');
+
+var _animation2 = _interopRequireDefault(_animation);
 
 var _border = require('./rules/border');
 
@@ -30,8 +36,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /* eslint-disable quote-props */
 
-// rules
-var rules = {
+const rules = {
+    'animation': _animation2.default,
+    '-webkit-animation': _animation2.default,
     'border': _border2.default,
     'border-top': _border2.default,
     'border-right': _border2.default,
@@ -46,13 +53,11 @@ var rules = {
 
 /* eslint-enable */
 
+// rules
 function shouldAbort(parsed) {
-    var abort = false;
-    parsed.walk(function (_ref) {
-        var type = _ref.type,
-            value = _ref.value;
-
-        if (type === 'comment' || type === 'function' && value === 'var' || type === 'word' && ~value.indexOf('___CSS_LOADER_IMPORT___')) {
+    let abort = false;
+    parsed.walk(({ type, value }) => {
+        if (type === 'comment' || type === 'function' && value.toLowerCase() === 'var' || type === 'word' && ~value.indexOf(`___CSS_LOADER_IMPORT___`)) {
             abort = true;
             return false;
         }
@@ -60,14 +65,14 @@ function shouldAbort(parsed) {
     return abort;
 }
 
-exports.default = _postcss2.default.plugin('postcss-ordered-values', function () {
-    return function (css) {
-        css.walkDecls(function (decl) {
-            var processor = rules[decl.prop];
+exports.default = _postcss2.default.plugin('postcss-ordered-values', () => {
+    return css => {
+        css.walkDecls(decl => {
+            const processor = rules[decl.prop.toLowerCase()];
             if (!processor) {
                 return;
             }
-            var parsed = (0, _getParsed2.default)(decl);
+            const parsed = (0, _getParsed2.default)(decl);
             if (parsed.nodes.length < 2 || shouldAbort(parsed)) {
                 return;
             }

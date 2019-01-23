@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import HomeButton from './components/shared/home-button';
+import CircleButton from './components/shared/circle-button';
 
 import './styles/normalize.css';
 import './styles/skeleton.css';
 import './styles/master.css';
 
 Vue.config.productionTip = false;
-Vue.component('home-button', HomeButton);
+Vue.component('circle-button', CircleButton);
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
   document.title = to.name;

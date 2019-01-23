@@ -1,20 +1,34 @@
 <template lang="html">
-  <div class="container">
-    <home-button></home-button>
-    <form class="controller">
-      <label for="initialTemp">Initial Temp.</label>
-      <input type="text" name="initialTemp" v-model="initialTemp" placeholder="Initial Temp">
-      <label for="coolingRate">Cooling Rate</label>
-      <input type="text" name="coolingRate" v-model="coolingRate" placeholder="Cooling Rate">
-      <hr>
-      <label for="speed">Simulation Speed</label>
-      <input type="range" v-model.number="speed" min="0" max="100">
-      <br>
-      <button type="button" @click="run">Run</button>
-      <button type="button" @click="restart">Restart</button>
-    </form>
-    <canvas ref="canvas"></canvas>
+  <div>
+    <router-link to="/">
+      <circle-button class="home-button">
+        arrow_back
+      </circle-button>
+    </router-link>
+      <div class="container">
+        <canvas ref="canvas" class="full-screen-canvas"></canvas>
+        <div class="controller">
+          <circle-button v-on:click.native="run">skip_next</circle-button>
+          <circle-button v-on:click.native="restart">replay</circle-button>
+          <circle-button v-on:click.native="initialize">settings</circle-button>
+        </div>
+        <!-- <form class="controller">
+          <label for="initialTemp">Initial Temp.</label>
+          <input type="text" name="initialTemp" v-model="initialTemp" placeholder="Initial Temp">
+          <label for="coolingRate">Cooling Rate</label>
+          <input type="text" name="coolingRate" v-model="coolingRate" placeholder="Cooling Rate">
+          <hr>
+          <label for="speed">Simulation Speed</label>
+          <input type="range" v-model.number="speed" min="0" max="100">
+          <br>
+          <button type="button" @click="run">Run</button>
+          <button type="button" class="button-primary" @click="restart">Restart</button>
+        </form> -->
+
+      </div>
+
   </div>
+
 </template>
 
 <script>
@@ -28,8 +42,8 @@ export default {
       backgroundColor: '#D66E2D',
       ballColor: '#E8F980',
       initialTemp: 10,
-      coolingRate: 0.99,
-      speed: 50,
+      coolingRate: 0.95,
+      speed: 100,
     };
   },
   computed: {
@@ -101,28 +115,4 @@ export default {
 </script>
 
 <style scoped lang="css">
-  canvas {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    display: block;
-    margin: 0;
-    padding: 0;
-    z-index: -1;
-  }
-
-  hr{
-    border-color: #bbb;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-  .controller {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    z-index: 1;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.75);
-    border-radius: .5rem;
-  }
 </style>

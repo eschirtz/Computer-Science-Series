@@ -8,13 +8,17 @@
     </div>
     <div class="list-item" v-for="episode in episodes" :key="episode.num" >
       <div class="row">
-        <div class="two columns" style="color: #5C626B;">
+        <div class="two columns" style="color: #5C626B; margin-bottom: 1em">
           {{episode.num}}
         </div>
         <div class="ten columns">
-          <router-link :to="episode.demolink">
-            <h5 style="margin-bottom: 0;">{{episode.name}}</h5>
-            <p>{{episode.description}}</p>
+          <h5 style="margin-bottom: 0;">{{episode.name}}</h5>
+          <p>{{episode.description}}</p>
+          <router-link class="text-button" :to="episode.writeuplink">
+            <button type="button" name="button">Writeup</button>
+          </router-link>
+          <router-link class="text-button" :to="episode.demolink">
+            <button type="button" name="button">Demo</button>
           </router-link>
         </div>
       </div>

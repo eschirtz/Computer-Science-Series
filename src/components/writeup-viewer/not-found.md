@@ -2,7 +2,7 @@
 Try going to the home page and clicking on a specific episode.
 Or, feel free to double check the url you typed in and refresh the page!
 
-``` js
+``` javascript
 let found = false;
 
 while(!found){

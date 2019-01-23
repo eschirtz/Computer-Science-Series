@@ -11,23 +11,42 @@ const TWEEN = require('./Tween.js').TWEEN;
 const World = {};
 const BG_COLOR = '#292E34';
 const DEFAULT_COLOR = '#363D45';
+let frameId;
 
 function animate() {
-  window.requestAnimationFrame(animate);
+  frameId = window.requestAnimationFrame(animate);
   TWEEN.update();
   render(World.canvas);
 }
 
-function initialize(numPoints, clusters, canvas, numSteps) {
-  console.log(numSteps);
+function initialize(numPoints, numCentroids, canvas, numSteps) {
   const width = canvas.width;
   const height = canvas.height;
-  World.numClusters = clusters;
+  World.numCentroids = numCentroids;
+  World.numPoints = numPoints;
   World.numSteps = numSteps;
   World.centroids = [];
   World.canvas = canvas;
+  setCentroids(width, height);
+  setPoints(width, height);
+  // kick off animation loop for tweening
+  if (frameId) window.cancelAnimationFrame(frameId);
+  animate();
+}
+
+function setPoints(width, height) {
+  // Build world of random points
+  World.points = Util.getGroupedDistribution(
+    width,
+    height,
+    World.numPoints,
+    World.numCentroids * (Math.random() * 2),
+  );
+}
+
+function setCentroids(width, height) {
   // Place clusters randomly
-  for (let i = 0; i < clusters; i += 1) {
+  for (let i = 0; i < World.numCentroids; i += 1) {
     const hue = (i * 50) % 360; // Move through color wheel
     World.centroids.push(
       {
@@ -38,14 +57,6 @@ function initialize(numPoints, clusters, canvas, numSteps) {
       },
     );
   }
-  // Build world of random points
-  World.points = Util.getGroupedDistribution(
-    canvas.width,
-    canvas.height,
-    numPoints,
-    clusters * (Math.random() * 2),
-  );
-  animate(); // kick off animation loop for tweening
 }
 
 function render(canvas) {
@@ -64,7 +75,7 @@ function render(canvas) {
 
 function step() {
   // Make buckets
-  for (let i = 0; i < World.numClusters; i += 1) {
+  for (let i = 0; i < World.numCentroids; i += 1) {
     World.centroids[i].prevBucket = World.centroids[i].bucket; // save prev
     World.centroids[i].bucket = []; // clear bucket for each centroid
   }
@@ -72,7 +83,7 @@ function step() {
   World.points.forEach((point) => {
     let bestCentroid = -1; // index of best centroid
     let bestDistance = Number.MAX_VALUE;
-    for (let i = 0; i < World.numClusters; i += 1) {
+    for (let i = 0; i < World.numCentroids; i += 1) {
       const dist = Util.getDistance(point, World.centroids[i]);
       if (dist < bestDistance) {
         bestDistance = dist;

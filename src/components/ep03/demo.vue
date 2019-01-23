@@ -1,10 +1,17 @@
 <template lang="html">
-  <div class="container">
-    <home-button></home-button>
-    <canvas ref="canvas"></canvas>
-    <div class="controller">
-      <button type="button" v-on:click="wrapper('step')">Step</button>
-      <button type="button" v-on:click="wrapper('restart')">Rese</button>
+  <div>
+    <router-link to="/">
+      <circle-button class="home-button">
+        arrow_back
+      </circle-button>
+    </router-link>
+    <div class="container">
+      <canvas ref="canvas" class="full-screen-canvas"></canvas>
+      <div class="controller">
+        <circle-button color='accent' v-on:click.native="wrapper('step')">skip_next</circle-button>
+        <circle-button v-on:click.native="wrapper('restart')">replay</circle-button>
+        <circle-button v-on:click.native="wrapper('reset')">settings</circle-button>
+      </div>
     </div>
   </div>
 </template>
@@ -69,20 +76,3 @@ export default {
   },
 };
 </script>
-
-<style lang="css" scoped>
-  canvas {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    display: block;
-    margin: 0;
-    padding: 0;
-    z-index: -1;
-  }
-  .controller {
-    position: fixed;
-    bottom: 10px;
-    left: 10px
-  }
-</style>

@@ -32,6 +32,10 @@ hr{
   left: 1em;
 }
 
+.text-button {
+  margin-right: .5em;
+}
+
 /* Overide some of Skeleton's button styling
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .button,

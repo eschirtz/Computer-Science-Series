@@ -15,10 +15,10 @@
           <h5 style="margin-bottom: 0;">{{episode.name}}</h5>
           <p>{{episode.description}}</p>
           <router-link class="text-button" :to="episode.writeuplink">
-            <button type="button" name="button">Writeup</button>
+            <button>Writeup</button>
           </router-link>
           <router-link class="text-button" :to="episode.demolink">
-            <button type="button" name="button">Demo</button>
+            <button>Demo</button>
           </router-link>
         </div>
       </div>

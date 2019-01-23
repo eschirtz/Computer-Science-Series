@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@tweenjs/tween.js": "^17.2.0",
+    "ajv": "^6.7.0",
     "showdown": "^1.9.0",
     "vue": "^2.5.21",
     "vue-lottie": "^0.2.1",

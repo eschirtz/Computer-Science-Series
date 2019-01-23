@@ -6,10 +6,8 @@
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
 import Util from './utility'
+var TWEEN = require('@tweenjs/tween.js')
 
-const TWEEN = require('./Tween.js')
-
-console.log(TWEEN)
 const World = {}
 const BG_COLOR = '#292E34'
 const DEFAULT_COLOR = '#363D45'

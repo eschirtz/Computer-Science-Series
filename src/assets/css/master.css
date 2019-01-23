@@ -1,0 +1,85 @@
+body{
+  color: #A7ACB6;
+  background: #292E34;
+}
+
+hr{
+  border-color: #5C626B;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+}
+
+.controller {
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
+  cursor: pointer;
+}
+
+.full-screen-canvas {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  z-index: -1;
+}
+
+.home-button {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+}
+
+.text-button {
+  margin-right: .5em;
+}
+
+/* Overide some of Skeleton's button styling
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  border: none;
+  color: #A7ACB6;
+  background-color: rgba(255,255,255,0.1);
+  -webkit-transition: color .25s, background-color .5s, border .25s; /* Safari */
+  transition: color .25s, background-color .5s, border .25s;
+}
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #FFFFFF;
+  background-color: rgba(255,255,255,0.25);
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFFFFF;
+  background-color: #33C3F0;
+}
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: rgb(21, 165, 210);
+}

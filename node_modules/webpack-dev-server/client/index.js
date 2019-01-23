@@ -131,6 +131,7 @@ var onSocketMsg = {
 
   'progress-update': function progressUpdate(data) {
     if (useProgress) log.info('[WDS] ' + data.percent + '% - ' + data.msg + '.');
+    sendMsg('Progress', data);
   },
   ok: function ok() {
     sendMsg('Ok');

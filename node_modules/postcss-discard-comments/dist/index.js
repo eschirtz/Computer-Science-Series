@@ -1,6 +1,10 @@
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _postcss = require('postcss');
 
 var _commentRemover = require('./lib/commentRemover');
 
@@ -10,44 +14,34 @@ var _commentParser = require('./lib/commentParser');
 
 var _commentParser2 = _interopRequireDefault(_commentParser);
 
-var _postcss = require('postcss');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var space = _postcss.list.space;
+const { space } = _postcss.list;
 
-exports.default = (0, _postcss.plugin)('postcss-discard-comments', function () {
-    var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-    var remover = new _commentRemover2.default(opts);
+exports.default = (0, _postcss.plugin)('postcss-discard-comments', (opts = {}) => {
+    const remover = new _commentRemover2.default(opts);
 
     function matchesComments(source) {
-        return (0, _commentParser2.default)(source).filter(function (node) {
-            return node.type === 'comment';
-        });
+        return (0, _commentParser2.default)(source).filter(([type]) => type);
     }
 
-    function replaceComments(source) {
-        var separator = arguments.length <= 1 || arguments[1] === undefined ? ' ' : arguments[1];
-
-        if (!source) {
-            return source;
-        }
-        var parsed = (0, _commentParser2.default)(source).reduce(function (value, node) {
-            if (node.type !== 'comment') {
-                return value + node.value;
+    function replaceComments(source, separator = ' ') {
+        const parsed = (0, _commentParser2.default)(source).reduce((value, [type, start, end]) => {
+            const contents = source.slice(start, end);
+            if (!type) {
+                return value + contents;
             }
-            if (remover.canRemove(node.value)) {
+            if (remover.canRemove(contents)) {
                 return value + separator;
             }
-            return value + '/*' + node.value + '*/';
+            return `${value}/*${contents}*/`;
         }, '');
 
         return space(parsed).join(' ');
     }
 
-    return function (css) {
-        css.walk(function (node) {
+    return css => {
+        css.walk(node => {
             if (node.type === 'comment' && remover.canRemove(node.text)) {
                 node.remove();
                 return;
@@ -68,7 +62,7 @@ exports.default = (0, _postcss.plugin)('postcss-discard-comments', function () {
                 }
                 if (node.raws.important) {
                     node.raws.important = replaceComments(node.raws.important);
-                    var b = matchesComments(node.raws.important);
+                    const b = matchesComments(node.raws.important);
                     node.raws.important = b.length ? node.raws.important : '!important';
                 }
                 return;
@@ -81,7 +75,7 @@ exports.default = (0, _postcss.plugin)('postcss-discard-comments', function () {
 
             if (node.type === 'atrule') {
                 if (node.raws.afterName) {
-                    var commentsReplaced = replaceComments(node.raws.afterName);
+                    const commentsReplaced = replaceComments(node.raws.afterName);
                     if (!commentsReplaced.length) {
                         node.raws.afterName = commentsReplaced + ' ';
                     } else {

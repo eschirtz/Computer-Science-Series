@@ -1,144 +1,194 @@
 'use strict';
 
 exports.__esModule = true;
+exports.FIELDS = undefined;
+
+var _unescapable, _wordDelimiters;
+
 exports.default = tokenize;
-var singleQuote = 39,
-    doubleQuote = 34,
-    backslash = 92,
-    slash = 47,
-    newline = 10,
-    space = 32,
-    feed = 12,
-    tab = 9,
-    cr = 13,
-    plus = 43,
-    gt = 62,
-    tilde = 126,
-    pipe = 124,
-    comma = 44,
-    openBracket = 40,
-    closeBracket = 41,
-    openSq = 91,
-    closeSq = 93,
-    semicolon = 59,
-    asterisk = 42,
-    colon = 58,
-    ampersand = 38,
-    at = 64,
-    atEnd = /[ \n\t\r\{\(\)'"\\;/]/g,
-    wordEnd = /[ \n\t\r\(\)\*:;@!&'"\+\|~>,\[\]\\]|\/(?=\*)/g;
+
+var _tokenTypes = require('./tokenTypes');
+
+var t = _interopRequireWildcard(_tokenTypes);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var unescapable = (_unescapable = {}, _unescapable[t.tab] = true, _unescapable[t.newline] = true, _unescapable[t.cr] = true, _unescapable[t.feed] = true, _unescapable);
+var wordDelimiters = (_wordDelimiters = {}, _wordDelimiters[t.space] = true, _wordDelimiters[t.tab] = true, _wordDelimiters[t.newline] = true, _wordDelimiters[t.cr] = true, _wordDelimiters[t.feed] = true, _wordDelimiters[t.ampersand] = true, _wordDelimiters[t.asterisk] = true, _wordDelimiters[t.bang] = true, _wordDelimiters[t.comma] = true, _wordDelimiters[t.colon] = true, _wordDelimiters[t.semicolon] = true, _wordDelimiters[t.openParenthesis] = true, _wordDelimiters[t.closeParenthesis] = true, _wordDelimiters[t.openSquare] = true, _wordDelimiters[t.closeSquare] = true, _wordDelimiters[t.singleQuote] = true, _wordDelimiters[t.doubleQuote] = true, _wordDelimiters[t.plus] = true, _wordDelimiters[t.pipe] = true, _wordDelimiters[t.tilde] = true, _wordDelimiters[t.greaterThan] = true, _wordDelimiters[t.equals] = true, _wordDelimiters[t.dollar] = true, _wordDelimiters[t.caret] = true, _wordDelimiters[t.slash] = true, _wordDelimiters);
+
+var hex = {};
+var hexChars = "0123456789abcdefABCDEF";
+for (var i = 0; i < hexChars.length; i++) {
+    hex[hexChars.charCodeAt(i)] = true;
+}
+
+/**
+ *  Returns the last index of the bar css word
+ * @param {string} css The string in which the word begins
+ * @param {number} start The index into the string where word's first letter occurs
+ */
+function consumeWord(css, start) {
+    var next = start;
+    var code = void 0;
+    do {
+        code = css.charCodeAt(next);
+        if (wordDelimiters[code]) {
+            return next - 1;
+        } else if (code === t.backslash) {
+            next = consumeEscape(css, next) + 1;
+        } else {
+            // All other characters are part of the word
+            next++;
+        }
+    } while (next < css.length);
+    return next - 1;
+}
+
+/**
+ *  Returns the last index of the escape sequence
+ * @param {string} css The string in which the sequence begins
+ * @param {number} start The index into the string where escape character (`\`) occurs.
+ */
+function consumeEscape(css, start) {
+    var next = start;
+    var code = css.charCodeAt(next + 1);
+    if (unescapable[code]) {
+        // just consume the escape char
+    } else if (hex[code]) {
+        var hexDigits = 0;
+        // consume up to 6 hex chars
+        do {
+            next++;
+            hexDigits++;
+            code = css.charCodeAt(next + 1);
+        } while (hex[code] && hexDigits < 6);
+        // if fewer than 6 hex chars, a trailing space ends the escape
+        if (hexDigits < 6 && code === t.space) {
+            next++;
+        }
+    } else {
+        // the next char is part of the current word
+        next++;
+    }
+    return next;
+}
+
+var FIELDS = exports.FIELDS = {
+    TYPE: 0,
+    START_LINE: 1,
+    START_COL: 2,
+    END_LINE: 3,
+    END_COL: 4,
+    START_POS: 5,
+    END_POS: 6
+};
 
 function tokenize(input) {
     var tokens = [];
     var css = input.css.valueOf();
+    var _css = css,
+        length = _css.length;
 
-    var code = void 0,
-        next = void 0,
-        quote = void 0,
-        lines = void 0,
-        last = void 0,
-        content = void 0,
-        escape = void 0,
-        nextLine = void 0,
-        nextOffset = void 0,
-        escaped = void 0,
-        escapePos = void 0;
-
-    var length = css.length;
     var offset = -1;
     var line = 1;
-    var pos = 0;
+    var start = 0;
+    var end = 0;
 
-    var unclosed = function unclosed(what, end) {
+    var code = void 0,
+        content = void 0,
+        endColumn = void 0,
+        endLine = void 0,
+        escaped = void 0,
+        escapePos = void 0,
+        last = void 0,
+        lines = void 0,
+        next = void 0,
+        nextLine = void 0,
+        nextOffset = void 0,
+        quote = void 0,
+        tokenType = void 0;
+
+    function unclosed(what, fix) {
         if (input.safe) {
-            css += end;
+            // fyi: this is never set to true.
+            css += fix;
             next = css.length - 1;
         } else {
-            throw input.error('Unclosed ' + what, line, pos - offset, pos);
+            throw input.error('Unclosed ' + what, line, start - offset, start);
         }
-    };
+    }
 
-    while (pos < length) {
-        code = css.charCodeAt(pos);
+    while (start < length) {
+        code = css.charCodeAt(start);
 
-        if (code === newline) {
-            offset = pos;
+        if (code === t.newline) {
+            offset = start;
             line += 1;
         }
 
         switch (code) {
-            case newline:
-            case space:
-            case tab:
-            case cr:
-            case feed:
-                next = pos;
+            case t.space:
+            case t.tab:
+            case t.newline:
+            case t.cr:
+            case t.feed:
+                next = start;
                 do {
                     next += 1;
                     code = css.charCodeAt(next);
-                    if (code === newline) {
+                    if (code === t.newline) {
                         offset = next;
                         line += 1;
                     }
-                } while (code === space || code === newline || code === tab || code === cr || code === feed);
+                } while (code === t.space || code === t.newline || code === t.tab || code === t.cr || code === t.feed);
 
-                tokens.push(['space', css.slice(pos, next), line, pos - offset, pos]);
-                pos = next - 1;
+                tokenType = t.space;
+                endLine = line;
+                endColumn = next - offset - 1;
+                end = next;
                 break;
 
-            case plus:
-            case gt:
-            case tilde:
-            case pipe:
-                next = pos;
+            case t.plus:
+            case t.greaterThan:
+            case t.tilde:
+            case t.pipe:
+                next = start;
                 do {
                     next += 1;
                     code = css.charCodeAt(next);
-                } while (code === plus || code === gt || code === tilde || code === pipe);
-                tokens.push(['combinator', css.slice(pos, next), line, pos - offset, pos]);
-                pos = next - 1;
+                } while (code === t.plus || code === t.greaterThan || code === t.tilde || code === t.pipe);
+
+                tokenType = t.combinator;
+                endLine = line;
+                endColumn = start - offset;
+                end = next;
                 break;
 
-            case asterisk:
-                tokens.push(['*', '*', line, pos - offset, pos]);
+            // Consume these characters as single tokens.
+            case t.asterisk:
+            case t.ampersand:
+            case t.bang:
+            case t.comma:
+            case t.equals:
+            case t.dollar:
+            case t.caret:
+            case t.openSquare:
+            case t.closeSquare:
+            case t.colon:
+            case t.semicolon:
+            case t.openParenthesis:
+            case t.closeParenthesis:
+                next = start;
+                tokenType = code;
+                endLine = line;
+                endColumn = start - offset;
+                end = next + 1;
                 break;
 
-            case ampersand:
-                tokens.push(['&', '&', line, pos - offset, pos]);
-                break;
-
-            case comma:
-                tokens.push([',', ',', line, pos - offset, pos]);
-                break;
-
-            case openSq:
-                tokens.push(['[', '[', line, pos - offset, pos]);
-                break;
-
-            case closeSq:
-                tokens.push([']', ']', line, pos - offset, pos]);
-                break;
-
-            case colon:
-                tokens.push([':', ':', line, pos - offset, pos]);
-                break;
-
-            case semicolon:
-                tokens.push([';', ';', line, pos - offset, pos]);
-                break;
-
-            case openBracket:
-                tokens.push(['(', '(', line, pos - offset, pos]);
-                break;
-
-            case closeBracket:
-                tokens.push([')', ')', line, pos - offset, pos]);
-                break;
-
-            case singleQuote:
-            case doubleQuote:
-                quote = code === singleQuote ? "'" : '"';
-                next = pos;
+            case t.singleQuote:
+            case t.doubleQuote:
+                quote = code === t.singleQuote ? "'" : '"';
+                next = start;
                 do {
                     escaped = false;
                     next = css.indexOf(quote, next + 1);
@@ -146,51 +196,26 @@ function tokenize(input) {
                         unclosed('quote', quote);
                     }
                     escapePos = next;
-                    while (css.charCodeAt(escapePos - 1) === backslash) {
+                    while (css.charCodeAt(escapePos - 1) === t.backslash) {
                         escapePos -= 1;
                         escaped = !escaped;
                     }
                 } while (escaped);
 
-                tokens.push(['string', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                pos = next;
-                break;
-
-            case at:
-                atEnd.lastIndex = pos + 1;
-                atEnd.test(css);
-                if (atEnd.lastIndex === 0) {
-                    next = css.length - 1;
-                } else {
-                    next = atEnd.lastIndex - 2;
-                }
-                tokens.push(['at-word', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                pos = next;
-                break;
-
-            case backslash:
-                next = pos;
-                escape = true;
-                while (css.charCodeAt(next + 1) === backslash) {
-                    next += 1;
-                    escape = !escape;
-                }
-                code = css.charCodeAt(next + 1);
-                if (escape && code !== slash && code !== space && code !== newline && code !== tab && code !== cr && code !== feed) {
-                    next += 1;
-                }
-                tokens.push(['word', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                pos = next;
+                tokenType = t.str;
+                endLine = line;
+                endColumn = start - offset;
+                end = next + 1;
                 break;
 
             default:
-                if (code === slash && css.charCodeAt(pos + 1) === asterisk) {
-                    next = css.indexOf('*/', pos + 2) + 1;
+                if (code === t.slash && css.charCodeAt(start + 1) === t.asterisk) {
+                    next = css.indexOf('*/', start + 2) + 1;
                     if (next === 0) {
                         unclosed('comment', '*/');
                     }
 
-                    content = css.slice(pos, next + 1);
+                    content = css.slice(start, next + 1);
                     lines = content.split('\n');
                     last = lines.length - 1;
 
@@ -202,30 +227,45 @@ function tokenize(input) {
                         nextOffset = offset;
                     }
 
-                    tokens.push(['comment', content, line, pos - offset, nextLine, next - nextOffset, pos]);
-
-                    offset = nextOffset;
+                    tokenType = t.comment;
                     line = nextLine;
-                    pos = next;
+                    endLine = nextLine;
+                    endColumn = next - nextOffset;
+                } else if (code === t.slash) {
+                    next = start;
+                    tokenType = code;
+                    endLine = line;
+                    endColumn = start - offset;
+                    end = next + 1;
                 } else {
-                    wordEnd.lastIndex = pos + 1;
-                    wordEnd.test(css);
-                    if (wordEnd.lastIndex === 0) {
-                        next = css.length - 1;
-                    } else {
-                        next = wordEnd.lastIndex - 2;
-                    }
-
-                    tokens.push(['word', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                    pos = next;
+                    next = consumeWord(css, start);
+                    tokenType = t.word;
+                    endLine = line;
+                    endColumn = next - offset;
                 }
 
+                end = next + 1;
                 break;
         }
 
-        pos++;
+        // Ensure that the token structure remains consistent
+        tokens.push([tokenType, // [0] Token type
+        line, // [1] Starting line
+        start - offset, // [2] Starting column
+        endLine, // [3] Ending line
+        endColumn, // [4] Ending column
+        start, // [5] Start position / Source index
+        end] // [6] End position
+        );
+
+        // Reset offset for the next token
+        if (nextOffset) {
+            offset = nextOffset;
+            nextOffset = null;
+        }
+
+        start = end;
     }
 
     return tokens;
 }
-module.exports = exports['default'];

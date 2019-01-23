@@ -1,6 +1,12 @@
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _browserslist = require('browserslist');
+
+var _browserslist2 = _interopRequireDefault(_browserslist);
 
 var _postcss = require('postcss');
 
@@ -10,69 +16,65 @@ var _postcssValueParser = require('postcss-value-parser');
 
 var _postcssValueParser2 = _interopRequireDefault(_postcssValueParser);
 
-var _colormin = require('colormin');
+var _colours = require('./colours');
 
-var _colormin2 = _interopRequireDefault(_colormin);
+var _colours2 = _interopRequireDefault(_colours);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function reduceWhitespaces(decl) {
-    decl.value = (0, _postcssValueParser2.default)(decl.value).walk(function (node) {
-        if (node.type === 'function' || node.type === 'div') {
-            node.before = node.after = '';
-        }
-    }).toString();
-}
-
 function walk(parent, callback) {
-    parent.nodes.forEach(function (node, index) {
-        var bubble = callback(node, index, parent);
+    parent.nodes.forEach((node, index) => {
+        const bubble = callback(node, index, parent);
         if (node.nodes && bubble !== false) {
             walk(node, callback);
         }
     });
 }
 
-function transform(decl, opts) {
-    if (decl.prop === '-webkit-tap-highlight-color') {
-        if (decl.value === 'inherit' || decl.value === 'transparent') {
-            return;
-        }
-        reduceWhitespaces(decl);
+function transform(legacy, decl) {
+    if (/^(composes|font|filter|-webkit-tap-highlight-color)/i.test(decl.prop)) {
         return;
     }
-    if (/^(composes|font|filter)/i.test(decl.prop)) {
-        return;
-    }
-    var ast = (0, _postcssValueParser2.default)(decl.value);
-    walk(ast, function (node, index, parent) {
+    const ast = (0, _postcssValueParser2.default)(decl.value);
+    walk(ast, (node, index, parent) => {
         if (node.type === 'function') {
-            if (/^(rgb|hsl)a?$/.test(node.value)) {
-                var value = node.value;
-
-                node.value = (0, _colormin2.default)((0, _postcssValueParser.stringify)(node), opts);
+            if (/^(rgb|hsl)a?$/i.test(node.value)) {
+                const { value } = node;
+                node.value = (0, _colours2.default)((0, _postcssValueParser.stringify)(node), legacy);
                 node.type = 'word';
-                var next = parent.nodes[index + 1];
-                if (node.value !== value && next && next.type === 'word') {
+                const next = parent.nodes[index + 1];
+                if (node.value !== value && next && (next.type === 'word' || next.type === 'function')) {
                     parent.nodes.splice(index + 1, 0, { type: 'space', value: ' ' });
                 }
-            } else if (node.value === 'calc') {
+            } else if (node.value.toLowerCase() === 'calc') {
                 return false;
             }
-        } else {
-            node.value = (0, _colormin2.default)(node.value, opts);
+        } else if (node.type === 'word') {
+            node.value = (0, _colours2.default)(node.value, legacy);
         }
     });
     decl.value = ast.toString();
 }
 
-exports.default = _postcss2.default.plugin('postcss-colormin', function () {
-    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+/*
+ * IE 8 & 9 do not properly handle clicks on elements
+ * with a `transparent` `background-color`.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/Events/click#Internet_Explorer
+ */
 
-    return function (css) {
-        return css.walkDecls(function (node) {
-            return transform(node, opts);
+function hasTransparentBug(browser) {
+    return ~['ie 8', 'ie 9'].indexOf(browser);
+}
+
+exports.default = _postcss2.default.plugin('postcss-colormin', () => {
+    return (css, result) => {
+        const resultOpts = result.opts || {};
+        const browsers = (0, _browserslist2.default)(null, {
+            stats: resultOpts.stats,
+            path: __dirname,
+            env: resultOpts.env
         });
+        css.walkDecls(transform.bind(null, browsers.some(hasTransparentBug)));
     };
 });
-module.exports = exports['default'];

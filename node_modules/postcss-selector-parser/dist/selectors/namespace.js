@@ -4,6 +4,12 @@ exports.__esModule = true;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _cssesc = require('cssesc');
+
+var _cssesc2 = _interopRequireDefault(_cssesc);
+
+var _util = require('../util');
+
 var _node = require('./node');
 
 var _node2 = _interopRequireDefault(_node);
@@ -25,15 +31,62 @@ var Namespace = function (_Node) {
         return _possibleConstructorReturn(this, _Node.apply(this, arguments));
     }
 
+    Namespace.prototype.qualifiedName = function qualifiedName(value) {
+        if (this.namespace) {
+            return this.namespaceString + '|' + value;
+        } else {
+            return value;
+        }
+    };
+
     Namespace.prototype.toString = function toString() {
-        return [this.spaces.before, this.ns, String(this.value), this.spaces.after].join('');
+        return [this.rawSpaceBefore, this.qualifiedName(this.stringifyProperty("value")), this.rawSpaceAfter].join('');
     };
 
     _createClass(Namespace, [{
+        key: 'namespace',
+        get: function get() {
+            return this._namespace;
+        },
+        set: function set(namespace) {
+            if (namespace === true || namespace === "*" || namespace === "&") {
+                this._namespace = namespace;
+                if (this.raws) {
+                    delete this.raws.namespace;
+                }
+                return;
+            }
+
+            var escaped = (0, _cssesc2.default)(namespace, { isIdentifier: true });
+            this._namespace = namespace;
+            if (escaped !== namespace) {
+                (0, _util.ensureObject)(this, "raws");
+                this.raws.namespace = escaped;
+            } else if (this.raws) {
+                delete this.raws.namespace;
+            }
+        }
+    }, {
         key: 'ns',
         get: function get() {
-            var n = this.namespace;
-            return n ? (typeof n === 'string' ? n : '') + '|' : '';
+            return this._namespace;
+        },
+        set: function set(namespace) {
+            this.namespace = namespace;
+        }
+    }, {
+        key: 'namespaceString',
+        get: function get() {
+            if (this.namespace) {
+                var ns = this.stringifyProperty("namespace");
+                if (ns === true) {
+                    return '';
+                } else {
+                    return ns;
+                }
+            } else {
+                return '';
+            }
         }
     }]);
 

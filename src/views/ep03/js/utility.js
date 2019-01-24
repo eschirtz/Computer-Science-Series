@@ -16,30 +16,6 @@ function getAveragePos (bucket) {
     y: ySum / length
   }
 }
-/*
-function getGroupedDistribution (width, height, numPoints, numGroups) {
-  const points = []
-  const groups = []
-  const PADDING = 500 // pixel padding amount
-  for (let i = 0; i < numGroups; i += 1) {
-    groups.push({
-      x: (Math.random() * (width - (2 * PADDING))) + (PADDING / 2),
-      y: (Math.random() * (height - (2 * PADDING))) + (PADDING / 2)
-    })
-  }
-  for (let i = 0; i < numPoints; i += 1) {
-    const currGroup = Math.floor(Math.random() * numGroups)
-    points.push(
-      {
-        x: groups[currGroup].x + ((PADDING * Math.random()) - 1),
-        y: groups[currGroup].y + ((PADDING * Math.random()) - 1)
-      }
-    )
-  }
-  return points
-}
-
-*/
 
 function getGroupedDistribution (width, height, numPoints, numGroups) {
   const points = []

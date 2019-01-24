@@ -10,8 +10,18 @@
         <div class="controller">
           <circle-button v-on:click.native="run">play_arrow</circle-button>
           <circle-button v-on:click.native="restart">replay</circle-button>
-          <circle-button v-on:click.native="initialize">settings</circle-button>
+          <circle-button v-on:click.native="toggleModal(true)">settings</circle-button>
         </div>
+        <modal v-if="modal">
+          <label for="initialTemp">Initial Temperature</label>
+          <input name="initialTemp" type="number" v-model="initialTemp">
+          <label for="coolingRate">Cooling Rate</label>
+          <input name="coolingRate" type="number" v-model="coolingRate">
+          <label for="speed">Simulation Speed</label>
+          <input name="speed" type="number" v-model="speed">
+          <hr>
+          <button v-on:click="toggleModal(false)" style="width: 100%;">Done</button>
+        </modal>
       </div>
   </div>
 </template>
@@ -22,10 +32,14 @@ import app from './js/main'
 export default {
   data () {
     return {
+      // Colors
       backgroundHillColor: '#C05010',
       hillColor: '#391A07',
       backgroundColor: '#D66E2D',
       ballColor: '#E8F980',
+      // UI
+      modal: true,
+      // Initial values
       initialTemp: 10,
       coolingRate: 0.95,
       speed: 100
@@ -74,6 +88,10 @@ export default {
     restart () {
       app.terminate()
       this.initialize()
+    },
+    toggleModal (force) {
+      console.log(force)
+      this.modal = force || !this.modal
     }
   },
   mounted () {

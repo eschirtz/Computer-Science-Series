@@ -14,10 +14,10 @@
         <div class="ten columns">
           <h5 style="margin-bottom: 0;">{{episode.name}}</h5>
           <p>{{episode.description}}</p>
-          <router-link class="text-button" :to="episode.writeuplink">
+          <router-link class="" :to="episode.writeuplink">
             <button>Writeup</button>
           </router-link>
-          <router-link class="text-button" :to="episode.demolink">
+          <router-link class="" :to="episode.demolink">
             <button>Demo</button>
           </router-link>
         </div>

@@ -37,10 +37,14 @@ export default {
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently
                           supported by Chrome and Opera */
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
   }
   .circle-outline:hover, .circle-outline:focus{
     color: rgba(255,255,255,1.0);
     background-color: rgba(255,255,255,0.25);
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
   }
   .material-icons{
     margin: 0 auto;

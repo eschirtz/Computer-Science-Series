@@ -14,10 +14,16 @@
         </div>
         <transition name="fade">
           <modal v-if="modal">
-            <label for="initialTemp">Initial Temperature</label>
-            <input name="initialTemp" type="number" v-model="initialTemp">
-            <label for="coolingRate">Cooling Rate</label>
-            <input name="coolingRate" type="number" v-model="coolingRate">
+            <div class="row">
+              <div class="six columns">
+                <label for="initialTemp">Initial Temp.</label>
+                <input name="initialTemp" type="number" v-model="initialTemp">
+              </div>
+              <div class="six columns">
+                <label for="coolingRate">Cooling Rate</label>
+                <input name="coolingRate" type="number" v-model="coolingRate">
+              </div>
+            </div>
             <label for="speed">Simulation Speed</label>
             <input name="speed" type="number" v-model="speed">
             <hr>

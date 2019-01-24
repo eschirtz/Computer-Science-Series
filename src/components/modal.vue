@@ -13,16 +13,20 @@ export default {
   label {
     font-weight: lighter;
     font-size: 1em;
-    letter-spacing: 0.1em;
+
   }
   hr {
     margin-top: 0.25em;
+  }
+  input {
+    width: 100%;
   }
   .modal {
     /* Positioning & Scaling */
     position: absolute;
     left: 50%;
     transform: translate(-50%, 50%);
+    margin: 0;
     /* Styling */
     background: #292E34;
     border-radius: .5em;

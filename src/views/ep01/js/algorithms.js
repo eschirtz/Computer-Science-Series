@@ -6,26 +6,26 @@
  *  @param temp
  *  @return s the new state
  */
-function simulatedAnnealing(state, stateSpace, inputTemp, stepSize) {
-  let s = state;
-  const ts = []; // Holds any worse states that were chosen
+function simulatedAnnealing (state, stateSpace, inputTemp, stepSize) {
+  let s = state
+  const ts = [] // Holds any worse states that were chosen
   // Apply successor function
-  const successors = stateSpace.getSuccessors(state, stepSize);
-  const temp = inputTemp < 0 ? 0 : inputTemp;
+  const successors = stateSpace.getSuccessors(state, stepSize)
+  const temp = inputTemp < 0 ? 0 : inputTemp
   // For each successor
   for (let i = 0; i < successors.length; i += 1) {
-    const t = successors[i];
+    const t = successors[i]
     // If score improves
     if (t.score > s.score) {
       // Always accept that successor
-      s = t;
+      s = t
     } else {
       // Accept worse state with certain probability
-      const loss = Math.abs(s.score - t.score); // Measure of how bad the state is
-      const probability = Math.exp(-(loss / temp)); // [ Boltzmann Distribution ]
+      const loss = Math.abs(s.score - t.score) // Measure of how bad the state is
+      const probability = Math.exp(-(loss / temp)) // [ Boltzmann Distribution ]
       if (Math.random() <= probability) {
-        ts.push(t); // add to potential worse neighbor list
-        s = t; // update new state
+        ts.push(t) // add to potential worse neighbor list
+        s = t // update new state
       }
     }
   }
@@ -33,11 +33,11 @@ function simulatedAnnealing(state, stateSpace, inputTemp, stepSize) {
   // we randomly select a worse neighbor, in order to prevent
   // from always choosing the first bad neighbor in the list.
   if (s.score < state.score) {
-    const r = Math.round(Math.random() * (ts.length - 1));
-    s = successors[r];
+    const r = Math.round(Math.random() * (ts.length - 1))
+    s = successors[r]
   }
   // return the chosen state //
-  return s;
+  return s
 }
 
-export default { simulatedAnnealing };
+export default { simulatedAnnealing }

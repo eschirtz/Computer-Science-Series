@@ -39,12 +39,16 @@ function getGroupedDistribution (width, height, numPoints, numGroups) {
       let g2 = getGauss() * yDistr
       if (groups[i].x + g1 > width) {
         tempX = groups[i].x - g1
-      } else {
+      } else if ( groups[i].x + g1 < 0) {
+	      tempX = groups[i].x - g1
+      }	else {
         tempX = groups[i].x - g1
       }
 
       if (groups[i].y + g2 > height) {
         tempY = groups[i].y - g2
+      } else if ( groups[i].y + g2 < 0) {
+	      tempY = groups[i].y - g2
       } else {
         tempY = groups[i].y + g2
       }

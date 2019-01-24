@@ -9,10 +9,10 @@
 <script>
 export default {
   props: ['color'],
-  mounted() {
+  mounted () {
     // TODO: Change color based on props
-  },
-};
+  }
+}
 </script>
 
 <style lang="css" scoped>

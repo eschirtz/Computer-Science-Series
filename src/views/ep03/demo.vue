@@ -18,51 +18,51 @@
 </template>
 
 <script>
-import canvasTools from '@/custom-modules/canvas-tools';
-import app from './js/main';
+import canvasTools from '@/custom-modules/canvas-tools'
+import app from './js/main'
 
 export default {
-  data() {
+  data () {
     return {
       points: 500,
       clusters: 5,
-      maxSteps: 50, // for auto play
-    };
+      maxSteps: 50 // for auto play
+    }
   },
   methods: {
-    init() {
-      canvasTools.setCanvasSize(this.$refs.canvas);
-      app.initialize(this.points, this.clusters, this.$refs.canvas, this.maxSteps);
-      this.setCanvasSize();
+    init () {
+      canvasTools.setCanvasSize(this.$refs.canvas)
+      app.initialize(this.points, this.clusters, this.$refs.canvas, this.maxSteps)
+      this.setCanvasSize()
     },
-    setCanvasSize() {
-      canvasTools.setCanvasSize(this.$refs.canvas);
-      app.render(this.$refs.canvas);
+    setCanvasSize () {
+      canvasTools.setCanvasSize(this.$refs.canvas)
+      app.render(this.$refs.canvas)
     },
     // Quick wrapper
-    wrapper(func) {
+    wrapper (func) {
       switch (func) {
         case 'step':
-          app.step();
-          break;
+          app.step()
+          break
         case 'play':
-          app.step(true);
-          break;
+          app.step(true)
+          break
         case 'restart':
-          this.init();
-          break;
+          this.init()
+          break
         default:
           // eslint-disable-next-line
           console.warn('wrapper() called without proper argument');
       }
-    },
+    }
   },
-  mounted() {
-    this.init();
-    window.addEventListener('resize', this.setCanvasSize);
+  mounted () {
+    this.init()
+    window.addEventListener('resize', this.setCanvasSize)
   },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.setCanvasSize);
-  },
-};
+  beforeDestroy () {
+    window.removeEventListener('resize', this.setCanvasSize)
+  }
+}
 </script>

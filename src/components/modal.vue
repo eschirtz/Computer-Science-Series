@@ -10,10 +10,23 @@ export default {
 </script>
 
 <style lang="css" scoped>
+  label{
+    font-weight: lighter;
+    font-size: 0.75em;
+    letter-spacing: 0.1em;
+  }
+  hr {
+    margin-top: 0.5em;
+  }
   .modal {
+    /* Positioning & Scaling */
     position: absolute;
-    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 50%);
+    /* Styling */
+    background: #292E34;
+    border-radius: .5em;
+    padding: 1em;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.5);
   }
 </style>

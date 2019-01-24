@@ -90,7 +90,6 @@ export default {
       this.initialize()
     },
     toggleModal (force) {
-      console.log(force)
       this.modal = force || !this.modal
     }
   },

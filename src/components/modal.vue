@@ -10,7 +10,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
-  label{
+  label {
     font-weight: lighter;
     font-size: 0.75em;
     letter-spacing: 0.1em;
@@ -26,7 +26,7 @@ export default {
     /* Styling */
     background: #292E34;
     border-radius: .5em;
-    padding: 1em;
+    padding: 2em 1em 1em 1em;
     box-shadow: 0px 5px 15px rgba(0,0,0,0.5);
   }
 </style>

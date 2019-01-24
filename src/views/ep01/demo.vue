@@ -12,16 +12,18 @@
           <circle-button v-on:click.native="restart">replay</circle-button>
           <circle-button v-on:click.native="toggleModal(true)">settings</circle-button>
         </div>
-        <modal v-if="modal">
-          <label for="initialTemp">Initial Temperature</label>
-          <input name="initialTemp" type="number" v-model="initialTemp">
-          <label for="coolingRate">Cooling Rate</label>
-          <input name="coolingRate" type="number" v-model="coolingRate">
-          <label for="speed">Simulation Speed</label>
-          <input name="speed" type="number" v-model="speed">
-          <hr>
-          <button v-on:click="toggleModal(false)" style="width: 100%;">Done</button>
-        </modal>
+        <transition name="fade">
+          <modal v-if="modal">
+            <label for="initialTemp">Initial Temperature</label>
+            <input name="initialTemp" type="number" v-model="initialTemp">
+            <label for="coolingRate">Cooling Rate</label>
+            <input name="coolingRate" type="number" v-model="coolingRate">
+            <label for="speed">Simulation Speed</label>
+            <input name="speed" type="number" v-model="speed">
+            <hr>
+            <button v-on:click="toggleModal(false)" style="width: 100%;">Done</button>
+          </modal>
+        </transition>
       </div>
   </div>
 </template>
@@ -104,4 +106,10 @@ export default {
 </script>
 
 <style scoped lang="css">
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .25s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
 </style>
